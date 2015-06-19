@@ -67,13 +67,15 @@ int main()
 			adapt_automatic_solver<RandomSolver>(Board()),
 			HumanSolver()
 		};
-		cout << "Choose solver: {";
+		string tmp = "Choose solver: {";
 		for (const auto& name : solvers.all_solvers_names())
-			cout << name << ", ";
-		cout << "}" << endl;
+			tmp += name + ", ";
+		tmp.pop_back();
+		tmp.back() = '}';
+		cout << tmp;
 		string choosen_solver;
 		cin >> choosen_solver;
-		run_solver(std::move(solvers).get_solver(choosen_solver));
+		run_solver(solvers.get_solver(choosen_solver));
 	}
 	catch (std::exception& ex) {
 		cout << ex.what() << endl;
