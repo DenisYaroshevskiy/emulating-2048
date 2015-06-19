@@ -1,5 +1,5 @@
 # emulating-2048
-Recration of 2048 game in C++, in console
+Recreation of 2048 game in C++, in console
 
 Original game: http://gabrielecirulli.github.io/2048/
 
