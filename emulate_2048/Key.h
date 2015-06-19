@@ -2,13 +2,13 @@
 
 namespace Game_2048
 {
-	enum class Key
-	{
-		Up = 'w',
-		Down = 's',
-		Left = 'a',
-		Right = 'd',
-		Break = 'b',
-		Other
-	};
+    enum class Key
+    {
+        Up = 'w',
+        Down = 's',
+        Left = 'a',
+        Right = 'd',
+        Break = 'b',
+        Other
+    };
 }
