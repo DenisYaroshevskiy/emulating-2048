@@ -64,7 +64,7 @@ namespace Game_2048 {
 		using success_status = bool;
 		success_status apply_action(Action action);
 	private:
-		/* FIXME:
+		/* TODO:
 		* Replace array with some array_view, cause
 		* array of arrays gives an overhead
 		*/

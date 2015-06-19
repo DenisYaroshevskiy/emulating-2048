@@ -82,7 +82,7 @@ namespace Tools {
 
 		ColumnView get_col(size_t coordinate);
 
-		//FIXME: write iterators
+		//TODO: write iterators
 		std::vector<ColumnView> get_all_cols()
 		{
 			std::vector<ColumnView> res;

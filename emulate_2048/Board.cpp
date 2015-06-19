@@ -12,7 +12,7 @@ using namespace std;
 using namespace Game_2048;
 using namespace Tools;
 
-// FIXME: compile time check for forward iterator
+// TODO: compile time check for forward iterator
 template <typename It, typename OutIt, typename Pred>
 void find_all(It begin, It end, OutIt out, Pred pred)
 {
@@ -34,7 +34,7 @@ const Cell* Game_2048::random_empty_cell(const Board& board)
 	
 	vector <Board::underlying_type::const_iterator> all_empty; // Board is reasonably small
 
-	// FIXME: write transform _copy_if in order to get pointers
+	// TODO: write transform _copy_if in order to get pointers
 	find_all(board.get_cells().begin(), board.get_cells().end(), back_inserter(all_empty),
 			[](const Cell& cell) { return cell.is_empty();});
 	
@@ -117,7 +117,7 @@ bool process_lines(LinesType lines)
 {
 	bool res = false;
 	for (auto line : lines) {
-		vector<Cell> old_2_compare = { line.begin(), line.end() }; // FIXME: can I establish, 
+		vector<Cell> old_2_compare = { line.begin(), line.end() }; // TODO: can I establish, 
 															   	   // that it was a successfull move faster?
 		auto division = stable_partition(line.begin(), line.end(), [](const Cell& cell) { return !cell.is_empty(); });
 		squise_combinable(line.begin(), division);

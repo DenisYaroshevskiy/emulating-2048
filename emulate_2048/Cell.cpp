@@ -15,7 +15,7 @@ Cell Cell::random()
 	
 	 /* 4 seems to be generated much rearely then 2
 	 * Maybe, there is a propper way to simulate this
-	 * FIXME: find out, how it should be done
+	 * TODO: find out, how it should be done
 	 */
 	static thread_local mt19937 generator (
 		static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count())
