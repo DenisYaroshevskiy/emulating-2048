@@ -42,9 +42,6 @@
     <ClInclude Include="RandomSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AutomaticSolverAdapter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ScopeExit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -52,6 +49,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Key.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SolversFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Visitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Solver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AutomaticSolverAdaptor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

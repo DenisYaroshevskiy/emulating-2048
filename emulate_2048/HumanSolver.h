@@ -3,11 +3,13 @@
 #include "Board.h"
 #include "Key.h "
 #include <boost\optional.hpp>
+#include <string>
 
 namespace Game_2048 {
 	class HumanSolver
 	{
 	public:
+		std::string get_name() const { return "HumanSolver"; }
 		Board get_current_board(Key key) {
 			if (key == Key::Other) return board_;
 			auto opt_action = gen_next_step(board_, key);
@@ -19,8 +21,8 @@ namespace Game_2048 {
 			}
 			return board_;
 		}
-		bool is_ready() { return ready_; }
-		Board get_result() { return board_; }
+		bool is_ready() const { return ready_; }
+		Board get_result() const { return board_; }
 	private:
 		Board board_;
 		bool ready_ = false;

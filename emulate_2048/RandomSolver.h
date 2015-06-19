@@ -5,11 +5,13 @@
 #include <random>
 #include <chrono>
 #include <thread>
+#include <string>
 
 namespace Game_2048 {
 	class RandomSolver
 	{
 	public:
+		std::string get_name() const { return "RandomSolver"; }
 		boost::optional<Action> gen_next_step(const Board&)
 		{
 			// same pattern as in Cell.cpp

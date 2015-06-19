@@ -7,12 +7,14 @@
 #include <algorithm>
 #include <array>
 #include <iterator>
-#include "MatrixView.h"
 
+#include "MatrixView.h"
 #include "Board.h"
+#include "Solver.h"
+#include "SolversFactory.h"
 #include "HumanSolver.h"
 #include "RandomSolver.h"
-#include "AutomaticSolverAdapter.h"
+#include "AutomaticSolverAdaptor.h"
 #include "platform_specific.h"
 #include "Key.h"
 
@@ -47,9 +49,9 @@ void pretty_print(const Board& board, const string& HeadLine = "Board: ")
 	cout << "Score: " << board.max() << endl;
 }
 
-template <typename Solver>
-void run_solver(Solver& solver)
+void run_solver(Solver solver)
 {
+	solver.start_solving();
 	for (Key key = Key::Other; !solver.is_ready() && key != Key::Break; key = get_pressed_key()) {
 		auto current_board = std::move(solver.get_current_board(key));
 		pretty_print(current_board);
@@ -60,9 +62,22 @@ void run_solver(Solver& solver)
 
 int main()
 {
-	AutomaticSolverAdaptor automatic_solver = adapt_automatic_solver<RandomSolver>(Board());
-	HumanSolver human_solver;
-	run_solver(human_solver);
+	try {
+		SolversFactory solvers{
+			adapt_automatic_solver<RandomSolver>(Board()),
+			HumanSolver()
+		};
+		cout << "Choose solver: {";
+		for (const auto& name : solvers.all_solvers_names())
+			cout << name << ", ";
+		cout << "}" << endl;
+		string choosen_solver;
+		cin >> choosen_solver;
+		run_solver(std::move(solvers).get_solver(choosen_solver));
+	}
+	catch (std::exception& ex) {
+		cout << ex.what() << endl;
+	}
 	wait_any_key();
 	return 0;
 }
