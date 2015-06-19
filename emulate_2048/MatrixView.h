@@ -20,8 +20,10 @@ namespace Tools {
 	  * !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	  */
 
-	  /*
-		It's a view class, so it doesn't store memory inside
+	 /*
+	  * It's a view class, so it doesn't store memory inside
+	  * 
+	  * TODO: rewrite the whole thing with range libray
 	  */
 	template <class It> //it's no difference in perfomance:
 						//store size as template parametr or as member
@@ -69,7 +71,9 @@ namespace Tools {
 			friend MatrixView;
 		};
 
-		//non const, because RowView is not logicaly const
+		// non const, because RowView its not logicaly const
+		// Matrix view is templated on type of iterator
+		// but view itself is not const
 		RowView get_row(size_t coordinate) {
 			assert(coordinate < row_size_);
 			RowView res;
