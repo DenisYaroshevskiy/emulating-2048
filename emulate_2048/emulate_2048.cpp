@@ -72,7 +72,7 @@ int main()
 			tmp += name + ", ";
 		tmp.pop_back();
 		tmp.back() = '}';
-		cout << tmp;
+		cout << tmp << endl;
 		string choosen_solver;
 		cin >> choosen_solver;
 		run_solver(solvers.get_solver(choosen_solver));
