@@ -235,4 +235,5 @@ namespace Tools {
     template<class It>
     inline MatrixView<It>::ColumnView::ColumnView(iterator begin, iterator end) : begin_(begin), end_(end) {}
 
+
 }
