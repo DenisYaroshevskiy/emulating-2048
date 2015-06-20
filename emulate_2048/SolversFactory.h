@@ -10,51 +10,55 @@
 #include <cassert>
 #include <stdexcept>
 #include <vector>
+#include <functional>
 
 namespace Game_2048 {
-    
-    
-    /* 
-     * Alexsanderscu like factory 
+
+
+    /*
+     * Alexsanderscu like factory
      * (Modern C++ design)
-     * Prototype factory
      */
+    template <typename ...SolversTypes>
     class SolversFactory
     {
     public:
 
-        SolversFactory(std::initializer_list<Solver> solvers) {
-            for (auto& solver : solvers) {                    
-                std::string key = solver.get_name();
-                assert(dispatcher_.find(key) == dispatcher_.end()); // Registering 2 solvers with 
-                                                                    // same name is a bad idea
-                dispatcher_.emplace(std::move(key), std::move(solver));
-            };
-
+        SolversFactory()
+        {
+            // For each possible solver - create a pair of key, 
+            // and fuction creator
+            // pack them in initializer list
+            // that's inserted in a map
+            dispatcher_.insert (
+            { // main initilizer list
+                { // single pair. Pretty neet, ha?)
+                    SolversTypes::get_name(),
+                    [](Board board) { return SolversTypes(std::move(board));} // this a lambda function without capture
+                }                                                             // most likely small enough to get stored
+                ...                                                           // in std::function itself
+            }
+            );
         }
 
-        Solver get_solver(const std::string& key) 
+        Solver get_solver(const std::string& key, const Board& board)
         {
             auto found = dispatcher_.find(key);
             if (found == dispatcher_.end())
                 throw std::logic_error("Unknow Solver");
-            return found->second;
+            return found->second(board);
         }
 
         std::vector<std::string> all_solvers_names()
         {
-            std::vector<std::string> res;
-            res.reserve(dispatcher_.size());
-            for (const auto& elem : dispatcher_)
-                res.push_back(elem.first);
-            return res;
+            return
+            {
+                SolversTypes::get_name()
+                ...
+            };
         }
     private:
-        std::unordered_map<std::string, Solver> dispatcher_;
-
-        void register_solvers() {}
-
-
+        std::unordered_map<std::string, std::function<Solver(Board)>> dispatcher_;
     };
 }
 
