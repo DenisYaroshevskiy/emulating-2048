@@ -24,6 +24,18 @@ namespace Game_2048 {
      * Should not be copied, while running
      * just because it's expensive
      * I've inserted a runtime assert in debug mode
+     *
+     * Concurrency is built around the idea, that
+     * it's much more likely to work in solver
+     * the to give current results
+     * so - I acquire a lock and then
+     * check if I'm being interrupted 
+     * to get a result.
+     *
+     * TODO:
+     * Now I'm waiting in both directions with an atomic
+     * checks, maybe, when I'm waiting to continue working
+     * it's better to use a conditional variable 
      */
     class AutomaticSolverAdaptor
     {
@@ -95,9 +107,7 @@ namespace Game_2048 {
             board_{ std::move(board) },
             pImpl_{ std::move(pImpl) },
             game_is_over_{}
-        {
-            
-        }
+        {}
 
 
         enum class Signal {
@@ -108,6 +118,18 @@ namespace Game_2048 {
 
         void start_solving_internal() {
             for (;;) { // in this cycle will aquire lock
+                if (signal_ != Signal::None) {  // TODO: replace waiting 
+                                                // back with conditional variable
+
+                    if (signal_ == Signal::Interrupt) return; // I don't know if
+                                                              // this can happen
+                                                              // but it's a legit 
+                                                              // and cheep check,
+                                                              // cause 2 atomic reads
+                                                              // can be optimised
+                    std::this_thread::yield();
+                    continue;
+                }
                 std::unique_lock<std::mutex> lock(*board_mutex_);
                 for (;;) {
                     auto next_step = pImpl_->gen_next_step(board_);
