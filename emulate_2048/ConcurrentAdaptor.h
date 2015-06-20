@@ -18,9 +18,7 @@ namespace Game_2048 {
      * Automatic solvers could be quite fast
      * We want it to be possible to follow them
      *
-     * Should not be copied, while running
-     * just because it's expensive
-     * I've inserted a runtime assert in debug mode
+     * Even moving this class is not required
      *
      * Concurrency is built around the idea, that
      * it's much more likely to work in solver
@@ -30,7 +28,7 @@ namespace Game_2048 {
      * to get a result.
      *
      * TODO:
-     * Now I'm waiting in both directions with an atomic
+     * Now I'm waiting in both directions with atomic
      * checks, maybe, when I'm waiting to continue working
      * it's better to use a conditional variable
      */

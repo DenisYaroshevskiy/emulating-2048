@@ -16,7 +16,7 @@ namespace Tools {
      * if I know, how to deduce return type, cause I don't know
      * parametr types)
      * accept ( make_visitor (
-     *                            [] (const TypeA& ) {},
+     *                          [] (const TypeA& ) {},
      *                          [] (const TypeB& ) {}
      *                            ....
      *                         )
@@ -31,8 +31,8 @@ namespace Tools {
      /*
       * This trick is used in std::function,
       * I think, it's really neet. Default template
-      * is disabled, now i can only
-      * write Visitor <int(Types...)> or smth
+      * is disabled, and specialisation is used as default
+      * so I can only write Visitor <int(Types...)> or smth
       */
     template <typename...>
     struct Visitor;
@@ -51,25 +51,25 @@ namespace Tools {
     template <typename ReturnType, typename Lambda>
     struct Visitor<ReturnType(Lambda)> : boost::static_visitor<ReturnType>, Lambda
     {
-        using Lambda::operator();   // For consistensy
+        using Lambda::operator();   // For consistensy with main specialization
         template <typename pLambda> // I need perfect forwarding
         Visitor(pLambda&& lambda) : Lambda(std::forward<pLambda>(lambda)) {}
     };
 
-    // So I inherit first lambda, get it's operator (), and then goes to the next one
+    // So I inherit first lambda, get it's operator (), 
+    // and then go to the next one
     // When I'm done, I inherit static_visitor
     // Neet, ha?
     // This way I get all operators () in my functor
-    // (BTW usings are necesarry due to rules of C++ function resolution
-    // rules)
+    // (BTW usings are necesarry due to rules of C++ function resolution rules)
     // And I need a forwarding constructor
     // Which looks horrible, I know
     template <typename ReturnType, typename Head, typename... Lambdas>
     struct Visitor < ReturnType(Head, Lambdas...) > :
-        public Head, // Typical for working with templates
+        public Head, // Typical recursion for working with templates
         public Visitor< ReturnType(Lambdas...)>
     {
-        using next_visitor = Visitor <ReturnType(Lambdas...) >;
+        using next_visitor = Visitor <ReturnType(Lambdas...) >; // less typing is nice
         using this_type = Visitor <ReturnType(Head, Lambdas...)>;
         using Head::operator();
         using next_visitor::operator();
