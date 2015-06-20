@@ -44,22 +44,12 @@ namespace Game_2048 {
             game_is_over_ = std::async([this] {start_solving_internal();});
         }
 
-        ConcurrentAdaptor(ConcurrentAdaptor<Adaptee>&& rhs) noexcept :
-        adaptee_{ std::move(rhs.adaptee_) },
-            board_{ std::move(rhs.board_) },
-            board_mutex_{ std::move(rhs.board_mutex_) },
-            signal_{ rhs.signal_.load() }, // copies and moves are deleted for atomics
-            game_is_over_{ rhs.game_is_over_ }
-        {}
-        ConcurrentAdaptor<Adaptee>& operator= (ConcurrentAdaptor<Adaptee>&& rhs) noexcept
-        {
-            adaptee_ = std::move(rhs.adaptee_);
-            board_ = std::move(rhs.board_);
-            board_mutex_ = std::move(rhs.board_mutex_);
-            signal_ = rhs.signal_.load();
-            game_is_over_ = std::move(rhs.game_is_over_);
-            return *this;
-        }
+        // I don't need them
+        ConcurrentAdaptor(ConcurrentAdaptor<Adaptee>&) = delete;
+        ConcurrentAdaptor<Adaptee>& operator= (ConcurrentAdaptor<Adaptee>& rhs)= delete;
+        ConcurrentAdaptor(ConcurrentAdaptor<Adaptee>&& rhs) noexcept = delete;
+        ConcurrentAdaptor<Adaptee>& operator= (ConcurrentAdaptor<Adaptee>&& rhs) noexcept = delete;
+
 
         static std::string get_name() { return "Concurrent" + Adaptee::get_name(); }
 
