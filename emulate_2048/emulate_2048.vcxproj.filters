@@ -54,7 +54,7 @@
     <ClInclude Include="Solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AutomaticSolverAdaptor.h">
+    <ClInclude Include="ConcurrentAdaptor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

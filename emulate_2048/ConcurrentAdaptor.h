@@ -92,15 +92,16 @@ namespace Game_2048 {
         std::unique_ptr<std::mutex> board_mutex_ = std::make_unique<std::mutex>(); // Yeah, a heap allocatin,
                                                                                    // but I don't care
                                                                                    // actually, I don't know other way
-        std::atomic<Signal> signal_{ Signal::None };
-        std::future <void> game_is_over_;
-
         enum class Signal {
             None,
             GetBoard,
             Interrupt
         };
 
+        std::atomic<Signal> signal_{ Signal::None };
+        std::future <void> game_is_over_;
+
+      
         void start_solving_internal() {
             for (;;) { // in this cycle will aquire lock
                 if (signal_ != Signal::None) {  // TODO: replace waiting 
@@ -118,7 +119,7 @@ namespace Game_2048 {
                 }
                 std::unique_lock<std::mutex> lock(*board_mutex_);
                 for (;;) {
-                    auto next_step = pImpl_->gen_next_step(board_);
+                    auto next_step = adaptee_.gen_next_step(board_);
                     if (!next_step) // generator doesn't know what to do
                         return;
                     board_.apply_action(*next_step);

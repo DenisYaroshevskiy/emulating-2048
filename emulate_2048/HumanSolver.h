@@ -9,7 +9,8 @@ namespace Game_2048 {
     class HumanSolver
     {
     public:
-        std::string get_name() const { return "HumanSolver"; }
+        HumanSolver(Board board) : board_{ board } {}
+        static std::string get_name() { return "HumanSolver"; }
         Board get_current_board(Key key) {
             if (key == Key::Other) return board_;
             auto opt_action = gen_next_step(board_, key);

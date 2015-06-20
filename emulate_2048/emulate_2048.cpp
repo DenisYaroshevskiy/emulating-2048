@@ -14,7 +14,7 @@
 #include "SolversFactory.h"
 #include "HumanSolver.h"
 #include "RandomSolver.h"
-#include "AutomaticSolverAdaptor.h"
+#include "ConcurrentAdaptor.h"
 #include "platform_specific.h"
 #include "Key.h"
 
@@ -51,7 +51,6 @@ void pretty_print(const Board& board, const string& HeadLine = "Board: ")
 
 void run_solver(Solver solver)
 {
-    solver.start_solving();
     for (Key key = Key::Other; !solver.is_ready() && key != Key::Break; key = get_pressed_key()) {
         auto current_board = std::move(solver.get_current_board(key));
         pretty_print(current_board);
@@ -63,19 +62,17 @@ void run_solver(Solver solver)
 int main()
 {
     try {
-        SolversFactory solvers{
-            adapt_automatic_solver<RandomSolver>(Board()),
-            HumanSolver()
-        };
+        SolversFactory <HumanSolver, ConcurrentAdaptor<RandomSolver> > solvers_factory;
+          
         string tmp = "Choose solver: {";
-        for (const auto& name : solvers.all_solvers_names())
+        for (const auto& name : solvers_factory.all_solvers_names())
             tmp += name + ", ";
         tmp.pop_back();
         tmp.back() = '}';
         cout << tmp << endl;
         string choosen_solver;
         cin >> choosen_solver;
-        run_solver(solvers.get_solver(choosen_solver));
+        run_solver(solvers_factory.get_solver(choosen_solver, Board{}));
     }
     catch (std::exception& ex) {
         cout << ex.what() << endl;

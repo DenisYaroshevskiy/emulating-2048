@@ -82,7 +82,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AutomaticSolverAdaptor.h" />
+    <ClInclude Include="ConcurrentAdaptor.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="HumanSolver.h" />

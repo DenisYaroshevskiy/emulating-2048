@@ -34,9 +34,10 @@ namespace Game_2048 {
             { // main initilizer list
                 { // single pair. Pretty neet, ha?)
                     SolversTypes::get_name(),
-                    [](Board board) { return SolversTypes(std::move(board));} // this a lambda function without capture
-                }                                                             // most likely small enough to get stored
-                ...                                                           // in std::function itself
+                    [](Board board)                                       // this a lambda function without capture
+                    { return make_solver<SolversTypes>(std::move(board));} // most likely small enough to get stored
+                }                                                         // in std::function itself
+                ...                                                       
             }
             );
         }

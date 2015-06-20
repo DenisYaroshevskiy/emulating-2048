@@ -5,74 +5,85 @@
 #include <string>
 #include <memory>
 
-//#include "Visitor.h" // This is a really nice wrapper to generate visitors
-// and it won't work on microsoft(((
-
-#include "HumanSolver.h"
-#include "AutomaticSolverAdaptor.h"
 #include "Key.h"
 #include "Board.h"
 
 namespace Game_2048 {
+
+    /*
+     * What's going on here is type erasure
+     * It's much like inheritance, but
+     * 1) - it's not intrusive
+     * 2) - it offers inheritance value semantics
+     * 3) - it even can be more efficient due to devirtualization
+     *
+     * If you are not familiar with this technice - I really recomend
+     * https://channel9.msdn.com/Events/GoingNative/2013/Inheritance-Is-The-Base-Class-of-Evil
+     *
+     */
     class Solver
     {
     public:
-        Solver(HumanSolver rhs) : body_{ std::move(rhs) } {}
-        Solver(AutomaticSolverAdaptor rhs) : body_{ std::move(rhs) } {}
-        void start_solving() {
-            struct : boost::static_visitor<void>
-            {
-                void operator() (HumanSolver&) { /*Human solver doesn't need this method*/ }
-                void operator() (AutomaticSolverAdaptor& rhs) { rhs.start_solving(); }
-            } action;
-            return boost::apply_visitor(action, body_);
-        }
-        std::string get_name() const {
-            struct : boost::static_visitor<std::string>
-            {
-                std::string operator() (const HumanSolver& rhs) { return rhs.get_name(); }
-                std::string operator() (const AutomaticSolverAdaptor& rhs) { return rhs.get_name(); }
-            } action;
-            return boost::apply_visitor    ( action, body_);
-        }
+        
+        // If I do such forwarding function, instead of moving adaptee
+        // I allow original solver not to be even movale
+        template <typename Adaptee, typename ...AdapteeParams>
+        friend Solver make_solver(AdapteeParams&&...);
+        
         Board get_current_board(Key key) {
-            class Visitor : public boost::static_visitor<Board>
-            {
-            public:
-                Visitor(Key key) : key_(key) {}
-                Board operator() (HumanSolver& rhs) { return rhs.get_current_board(key_); }
-                Board operator() (AutomaticSolverAdaptor& rhs) { return rhs.get_current_board(key_); }
-            private:
-                Key key_;
-            } action(key);
-
-            return boost::apply_visitor(action, body_);
+            return pImpl_->get_current_board(key);
         }
         bool is_ready() {
-            struct : boost::static_visitor<bool>
-            {
-                bool operator() (HumanSolver& rhs) { return rhs.is_ready(); }
-                bool operator() (AutomaticSolverAdaptor& rhs) { return rhs.is_ready(); }
-            } action;
-
-            return boost::apply_visitor(action, body_);
+            return pImpl_->is_ready();
         }
         Board get_result() {
-            struct : boost::static_visitor<Board>
-            {
-                Board operator() (HumanSolver& rhs) { return rhs.get_result(); }
-                Board operator() (AutomaticSolverAdaptor& rhs) { return rhs.get_result(); }
-            } action;
-
-            return boost::apply_visitor (action, body_);
+            return pImpl_->get_result();
         }
-
-        
     private:
-        using body_type = boost::variant<HumanSolver, AutomaticSolverAdaptor>;
-        
-        body_type body_;
+        class Interface; // Intellisence swear if I don't predeclare
+                         // this is strange, but so is C++
+        std::unique_ptr<Interface> pImpl_;
 
+        class Interface
+        {
+        public:
+            virtual Board get_current_board(Key) = 0;
+            virtual bool is_ready() = 0;
+            virtual Board get_result() = 0;
+        };
+
+
+        template <typename Adaptee>
+        class Concrete : public Interface
+        {
+        public:
+            template <typename ...AdapteeParams>
+            Concrete(AdapteeParams&&... params) :
+                body_{ std::forward<AdapteeParams>(params)... }
+            {}
+            Board get_current_board(Key key) override final
+            {
+                return body_.get_current_board(key);
+            }
+            bool is_ready() override final
+            {
+                return body_.is_ready();
+            }
+            Board get_result() override final
+            {
+                return body_.get_result();
+            }
+        private:
+            Adaptee body_;
+        };
+        Solver (std::unique_ptr<Interface> pImpl) : pImpl_{ std::move(pImpl) } {}
     };
+
+    template <typename Adaptee, typename ...AdapteeParams>
+    Solver make_solver(AdapteeParams&&... params)
+    {
+        auto derived_ptr = std::make_unique<Solver::Concrete<Adaptee> >(std::forward<AdapteeParams>(params)...);
+        return std::unique_ptr<Solver::Interface>{derived_ptr.release()};
+    }
 }
 
