@@ -22,8 +22,6 @@ namespace Tools {
 
      /*
       * It's a view class, so it doesn't store memory inside
-      * 
-      * TODO: rewrite the whole thing with range libray
       */
     template <class It> //it's no difference in perfomance:
                         //store size as template parametr or as member
