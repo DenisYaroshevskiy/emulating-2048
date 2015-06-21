@@ -5,6 +5,7 @@
 #include <string>
 #include <array>
 #include "Cell.h"
+#include "Tests.h"
 #include <utility>
 #include <boost\optional.hpp>
 
@@ -30,6 +31,7 @@ namespace Game_2048 {
     class Board
     {
     public:
+        friend class Tests;
         static constexpr int size = 4;
         static constexpr int initial_cells_count = 2;
         
@@ -64,10 +66,10 @@ namespace Game_2048 {
         using success_status = bool;
         success_status apply_action(Action action);
     private:
-        /* TODO:
-        * Replace array with some array_view, cause
-        * array of arrays gives an overhead
-        */
+        Board(std::initializer_list<Cell> rhs)  // for testing
+        {
+            std::copy(rhs.begin(), rhs.end(), cells_.begin());
+        }
         underlying_type cells_;
         int symbols_per_cell_ = 4;
     };

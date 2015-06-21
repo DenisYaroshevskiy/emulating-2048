@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PrintingProperties.h"
+#include "Tests.h"
 #include <boost\optional.hpp>
 #include <boost\lexical_cast.hpp>
 #include <cassert>
@@ -11,6 +12,7 @@ namespace Game_2048 {
     class Cell
     {
     public:
+        friend class Tests;
         using underlying_type = unsigned;
         Cell() : body_(0) {}
 

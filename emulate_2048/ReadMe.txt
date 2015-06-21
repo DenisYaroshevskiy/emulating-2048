@@ -1,3 +1,11 @@
+
+This is a console version of 2048 game:
+http://gabrielecirulli.github.io/2048/
+
+It's built in Visual Studio 2015, and you need boost (1.58 will do).
+I use quite a bit of modern C++, some concurrency and some TMP.
+
+
 ========================================================================
     CONSOLE APPLICATION : emulate_2048 Project Overview
 ========================================================================

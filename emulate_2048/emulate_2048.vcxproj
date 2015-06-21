@@ -94,12 +94,14 @@
     <ClInclude Include="ScopeExit.h" />
     <ClInclude Include="Solver.h" />
     <ClInclude Include="SolversFactory.h" />
+    <ClInclude Include="Tests.h" />
     <ClInclude Include="Visitor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="emulate_2048.cpp" />
+    <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

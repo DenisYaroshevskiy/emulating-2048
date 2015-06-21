@@ -17,6 +17,7 @@
 #include "ConcurrentAdaptor.h"
 #include "platform_specific.h"
 #include "Key.h"
+#include "Tests.h"
 
 using namespace Game_2048;
 using namespace std;
@@ -61,6 +62,7 @@ void run_solver(Solver solver)
 
 int main()
 {
+    assert(Tests::run());
     try {
         SolversFactory <HumanSolver, ConcurrentAdaptor<RandomSolver> > solvers_factory;
           
