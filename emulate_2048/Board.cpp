@@ -117,12 +117,17 @@ bool process_lines(LinesType lines)
 {
     bool res = false;
     for (auto line : lines) {
-        vector<Cell> old_2_compare = { line.begin(), line.end() }; // TODO: can I establish, 
-                                                                      // that it was a successfull move faster?
+        boost::optional<vector<Cell>> old_2_compare; // If res is true, I don't need it
+        if (!res)
+          old_2_compare = vector<Cell>{ line.begin(), line.end() }; // TODO: can I establish, 
+                                                                   // that it was a successfull move faster?
         auto division = stable_partition(line.begin(), line.end(), [](const Cell& cell) { return !cell.is_empty(); });
         squise_combinable(line.begin(), division);
-        auto difference = mismatch(old_2_compare.begin(), old_2_compare.end(), line.begin(), line.end()).first;
-        res |= (difference != old_2_compare.end());
+        if (!res) {
+            assert(old_2_compare);
+            auto difference = mismatch(old_2_compare->begin(), old_2_compare->end(), line.begin(), line.end()).first;
+            res = (difference != old_2_compare->end());
+        }
     }
     return res;
 }

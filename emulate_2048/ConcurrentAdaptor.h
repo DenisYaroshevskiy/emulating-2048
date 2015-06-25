@@ -7,6 +7,7 @@
 #include <mutex>
 #include <utility>
 #include <string>
+#include <cassert>
 #include "Board.h"
 #include "Key.h"
 #include "ScopeExit.h"
@@ -45,8 +46,8 @@ namespace Game_2048 {
         }
 
         // I don't need them
-        ConcurrentAdaptor(ConcurrentAdaptor<Adaptee>&) = delete;
-        ConcurrentAdaptor<Adaptee>& operator= (ConcurrentAdaptor<Adaptee>& rhs)= delete;
+        ConcurrentAdaptor(const ConcurrentAdaptor<Adaptee>&) = delete;
+        ConcurrentAdaptor<Adaptee>& operator= (const ConcurrentAdaptor<Adaptee>& rhs)= delete;
         ConcurrentAdaptor(ConcurrentAdaptor<Adaptee>&& rhs) noexcept = delete;
         ConcurrentAdaptor<Adaptee>& operator= (ConcurrentAdaptor<Adaptee>&& rhs) noexcept = delete;
 
@@ -114,13 +115,14 @@ namespace Game_2048 {
                     if (!board_.next_step()) // game ended
                         return;
                     //interuption point
-                    if (signal_ == Signal::None) continue; // release?
-                    if (signal_ == Signal::GetBoard) { // release ?
+                    auto current_signal = signal_.load(); // release?
+                    if (current_signal == Signal::None) continue;
+                    if (current_signal == Signal::GetBoard) {
                         lock.unlock();
                         std::this_thread::yield();
                         break;
                     }
-                    // Interrupt
+                    assert(current_signal == Signal::Interrupt);
                     return;
                 }
             }
