@@ -26,6 +26,7 @@ namespace Game_2048 {
 
         SolversFactory()
         {
+            // TODO: asser for keys uniqueness
             // For each possible solver - create a pair of key, 
             // and fuction creator
             // pack them in initializer list
@@ -35,7 +36,7 @@ namespace Game_2048 {
                 { // single pair. Pretty neet, ha?)
                     SolversTypes::get_name(),
                     [](Board board)                                       // this a lambda function without capture
-                    { return make_solver<SolversTypes>(std::move(board));} // most likely small enough to get stored
+                   { return make_solver<SolversTypes>(std::move(board));} // most likely small enough to get stored
                 }                                                         // in std::function itself
                 ...                                                       
             }
